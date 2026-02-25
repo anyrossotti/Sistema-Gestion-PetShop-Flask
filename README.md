@@ -1,7 +1,7 @@
 # 🐾 Sistema de Gestión Web - Pet Shop "Hola Humano"
 
 ### 📋 Descripción del Proyecto
-Aplicación web Full Stack desarrollada como trabajo final integrador. Simula el ecosistema digital de una tienda de mascotas, permitiendo tanto la visualización de productos y consejos para clientes, como la administración total del negocio mediante un panel de control protegido.
+Aplicación web Full Stack desarrollada como trabajo final integrador. Simula el ecosistema digital de una tienda de mascotas, con foco en la gestión de usuarios, productos y control de accesos.
 
 ### 💻 Funcionalidades Clave
 * **Seguridad y Accesibilidad:**
@@ -14,6 +14,7 @@ Aplicación web Full Stack desarrollada como trabajo final integrador. Simula el
 * **Experiencia de Usuario:**
     * Catálogo filtrado por categorías (Perros, Gatos, Otros).
     * Interfaz intuitiva y responsive.
+* **Validaciones de datos y manejo básico de errores en formularios y flujos de administración.**
 
 ### 🛠️ Tecnologías Utilizadas
 * **Lenguaje:** Python 3.
@@ -35,4 +36,5 @@ Si deseas correr este proyecto localmente:
 
 1. **Clonar el repositorio:**
    ```bash
+
    git clone [https://github.com/TU_USUARIO/Sistema-Gestion-PetShop-Flask.git](https://github.com/TU_USUARIO/Sistema-Gestion-PetShop-Flask.git)
