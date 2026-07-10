@@ -37,4 +37,4 @@ Si deseas correr este proyecto localmente:
 1. **Clonar el repositorio:**
    ```bash
 
-   git clone [https://github.com/TU_USUARIO/Sistema-Gestion-PetShop-Flask.git](https://github.com/TU_USUARIO/Sistema-Gestion-PetShop-Flask.git)
+   git clone [https://github.com/anyrossotti/Sistema-Gestion-PetShop-Flask.git](https://github.com/TU_USUARIO/Sistema-Gestion-PetShop-Flask.git)
