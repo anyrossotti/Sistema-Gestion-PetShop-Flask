@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session 
 #render template, para que cada vez que haga un cambio, no tenga q volver a ejecutar, si no que actualice solo
 from flask_mysqldb import MySQL,MySQLdb
-from notifypy import Notify
+#from notifypy import Notify
 
 app = Flask(__name__)
 #Conexion con la BDD
@@ -18,10 +18,10 @@ app.secret_key = 'mysecret'
 @app.route('/', methods = ['POST', 'GET'])
 def home():
     session.clear()
-    notificacion = Notify()    
+    """notificacion = Notify()    
     notificacion.title = "Bienvenido!"
     notificacion.message="😺​🐶​​Bienvenido a Hola Humano! Gracias por visitarnos!🐹​🐭"
-    notificacion.send()
+    notificacion.send()"""
     return render_template('home.html') #render template, para q m muestre, actualice la pagina q estoy pasando
 
 def refugio():
@@ -104,10 +104,10 @@ def registro():
 def salir():
     session.clear()
     session['logged_in'] = False
-    notificacion = Notify()    
+    """notificacion = Notify()    
     notificacion.title = "Salir"
     notificacion.message="Sesión cerrada correctamente."
-    notificacion.send()
+    notificacion.send()"""
     return render_template("home.html")
     
 #Traer la info, para despues editar
@@ -184,10 +184,12 @@ def buscarDNI(dni):
 def listarG():    
     if request.method == 'GET':
         if 'email' in session:
+            """
             notificacion = Notify()    
             notificacion.title = "Productos"
             notificacion.message="Tenemos los mejores productos para tu 😺​"
             notificacion.send()
+            """
             cur = mysql.connection.cursor()
             cur.execute("SELECT * FROM productos WHERE categoria = 'Gatos'")
             datos = cur.fetchall() 
@@ -202,10 +204,11 @@ def listarG():
 @app.route('/perros')
 def listarP():
     if request.method == 'GET':
-        notificacion = Notify()    
+        """notificacion = Notify()    
         notificacion.title = "Productos"
         notificacion.message="Tenemos los mejores productos para tu ​🐶"
         notificacion.send()
+        """
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM productos where categoria = 'Perros'")
         datos = cur.fetchall() 
@@ -218,10 +221,11 @@ def listarP():
 def listarO():
     if request.method == 'GET':
         if 'email' in session:
-            notificacion = Notify()    
+            """notificacion = Notify()    
             notificacion.title = "Productos"
             notificacion.message="Tenemos los mejores productos para tus ​🐹 ​🐭"
             notificacion.send()
+            """
             cur = mysql.connection.cursor()
             cur.execute("SELECT * FROM productos WHERE categoria = 'Otros'")
             datos = cur.fetchall() 
@@ -352,10 +356,12 @@ def productos():
 def consejo():
     if request.method == 'GET':
         if 'email' in session:
+            """
             notificacion = Notify()    
             notificacion.title = "Consejos"
             notificacion.message="Algunos consejos para cuidarlos mejor."
             notificacion.send()
+            """
             cur = mysql.connection.cursor()
             cur.execute("SELECT * FROM consejos")
             datos = cur.fetchall()

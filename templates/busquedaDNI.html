@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %} Busqueda por DNI {% endblock %}
+{% block body %}
+
+    <br>
+    <table class="table table-hover mt-6">
+      <thead>
+        <tr> <h5>Resultado de la búsqueda:</h5>
+          <th scope="col">ID</th>
+          <th scope="col">Dni</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Apellido</th>
+          <th scope="col">Teléfono</th>
+          <th scope="col">E-mail</th>
+          <th scope="col">Opciones</th>
+        </tr>
+      </thead>
+      <tbody> 
+        <tr class="table-active">
+          <th scope="row">{{ clientes.0 }}</th>
+          <td>{{ clientes.1 }}</td>
+          <td>{{ clientes.2 }}</td>
+          <td>{{ clientes.3 }}</td>
+          <td>{{ clientes.4 }}</td>
+          <td>{{ clientes.5 }}</td>
+          <td><a class="btn btn-secondary my-2 my-sm-0" href="/obtenerCliente/{{clientes.0}}"> Editar </a></td>
+          <td><a class="btn btn-secondary my-2 my-sm-0" href="/eliminar/{{clientes.0}}"> Eliminar </a></td>
+        </tr>
+      </tbody>
+    </table>
+  
+  {% endblock %}
+

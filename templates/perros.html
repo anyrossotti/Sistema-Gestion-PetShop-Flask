@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %} Productos para tu Perro {% endblock %}
+{% block body %}
+
+    <br>
+    <h1> Productos para tu Perro </h1>
+  <!-- Filtrar por:    Alimento  Snacks -->
+    
+    <!-- Traer con un for el listado de la base de datos -->
+    <!-- id, Nombre, precio, descripcion, imagen del Producto-->
+      <div class="principal">
+      {% for producto in productos %}
+        <div class="producto">
+          <img src="../static/public/uploads/{{ producto.4 }}" class="d-block w-100" alt="fotoProd"> <!-- Foto del Producto-->
+          <div class="detalle">
+            <p> {{ producto.1 }} </p>
+            <p> {{ producto.3 }} </p>
+            <p> ${{ producto.2 }} </p>
+            <div class="boton">
+              <button type="submit" class="btn btn-primary mt-8">Comprar</button>
+            </div>
+          </div>
+        </div>
+          {% endfor %}    
+      </div>
+    
+  {% endblock %}

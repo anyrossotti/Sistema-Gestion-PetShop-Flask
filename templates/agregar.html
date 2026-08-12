@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %} Agregar nuevo Producto {% endblock %}
+{% block body %}
+    <div>
+      <form action="/agregarProd" method = "POST">
+      <fieldset><br>
+      <h2><legend>Agregar nuevo Producto</legend><h2>
+        
+      <div class="form-group">
+        <div class="form-group">
+          <input type="text" name="nombre" class="form-control mt-4" id="inputRegistro" placeholder="Nombre" required >
+        </div>
+        <div class="form-group">
+          <input type="number" name="precio" class="form-control mt-2"  placeholder="Precio" required >
+        </div>
+        <div class="form-group">
+          <input type="text" name="descripcion" class="form-control mt-2" placeholder="Descripcion" >
+        </div>
+        <div class="form-group">      
+          <input type="file" accept="image/png,image/jpeg" name="img" class="form-control mt-2" placeholder="Imagen" >
+        </div>
+        <div class="form-group">
+          <select name= "categoria" class="form-control mt-2" >
+            <option value = "">Seleccione una Categoría</option>    
+            <option value = "perros"> Perros </option>
+            <option value = "gatos"> Gatos </option>    
+            <option value = "otros"> Otros </option>    
+          </select>
+        </div>
+      </div>
+  
+    <br>
+      <button type="submit" class="btn btn-primary mt-8">Submit</button>
+    </fieldset>
+    </form>
+    </div>
+  </center>
+
+{% endblock %}

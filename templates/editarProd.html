@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %} Editar Producto {% endblock %}
+{% block body %}
+        
+    <div class="form-group mt-2">
+        <fieldset> 
+        <form action="/editarProducto/{{ producto.0 }}" method = "POST", "GET">
+        <h2><legend>Actualizar registro</legend><h2>
+          <h5>Producto a modificar: {{ producto.0 }}<h5>
+        <div class="form-group">
+          <div class="form-group">
+            <input type="text" name="nombre" value="{{ producto.1 }}" class="form-control mt-2" placeholder="Ingrese el Nombre a modificar" >
+          </div>
+          <div class="form-group">
+            <input type="number" name="precio" value="{{ producto.2 }}" class="form-control mt-2" placeholder="Ingrese el Precio a modificar" >
+          </div>
+          <div class="form-group">
+            <input type="text" name="descripcion" value="{{ producto.3 }}" class="form-control mt-2" placeholder="Ingrese la Descripcion a modificar" >
+          </div>
+          <div class="form-group">
+            <input type="file" accept="image/png,image/jpeg,image/jpg" value="{{ producto.4 }}" name="img" class="form-control mt-2" placeholder="Imagen" title="Formato permitido PNG, JPEG, JPG.">
+          </div>
+          <div class="form-group">
+            <select name= "categoria" class="form-control mt-2" value="{{ producto.5 }}">
+              <option value = "">Seleccione una Categoría</option>    
+              <option value = "perros"> Perros </option>
+              <option value = "gatos"> Gatos </option>    
+              <option value = "otros"> Otros </option>    
+          </select>
+          </div>
+        </div>
+      
+        <br>
+          <button type="submit" class="btn btn-primary mt-8">Submit</button>
+        </fieldset>
+      </form>
+      </div>
+    </center>        
+{% endblock %}

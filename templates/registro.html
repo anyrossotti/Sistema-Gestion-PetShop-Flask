@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %} Registro {% endblock %}
+{% block body %}
+
+  <center>
+    <div class="card card-body col-md-7 pt-2">
+      <form action="/registro" method = "POST">
+      <fieldset>
+      <h3><legend>Registro</legend><h3>
+      <div class="form-group">
+        <input type="number" name="dni" class="form-control mt-3" id="inputRegistro" placeholder="DNI" required pattern="[0-9]{8}"
+        title="El Dni debe contener 8 dígitos.">
+        <input type="text" name="nombre" class="form-control mt-2" id="exampleInputPassword1" placeholder="Nombre" required >
+        <input type="text" name="apellido" class="form-control mt-2" id="exampleInputPassword1" placeholder="Apellido" required >  
+        <input type="tel" name="telefono" class="form-control mt-2" id="exampleInputPassword1" placeholder="Teléfono" required >
+        <input type="email" name="email" class="form-control mt-2" id="exampleInputPassword1" minlength="5" maxlength="30" placeholder="E-mail" required >
+        <input type="password" name="password" class="form-control mt-2" id="exampleInputPassword1" minlength="5" maxlength="30" placeholder="Password" required >
+        
+      <button type="submit" class="btn btn-primary mt-2">Submit</button>
+    </fieldset>
+    </form>
+    </div>    
+{% endblock %}

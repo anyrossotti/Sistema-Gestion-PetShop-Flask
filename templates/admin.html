@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %} Administrador {% endblock %}
+{% block body %}
+    
+    <form class="d-flex mt-4" role="search" action="/busquedaID/<id>" method = "POST", 'GET'>
+      <input class="form-control me-2" type="number" name= "id" placeholder="Buscar Usuario por ID" aria-label="Buscar" required pattern="[0-9]{1,5}">
+      <button class="btn btn-secondary my-2 my-sm-0" type="submit">Buscar</button>
+    </form>
+
+    <form class="d-flex mt-4" role="search" action = "/busquedaDNI/<dni>" method = "POST", 'GET'>
+      <input class="form-control me-2" type="number" name= "dni" placeholder="Buscar Usuario por DNI" aria-label="Buscar" required pattern="[0-9]{8}"
+      title="El Dni debe contener 8 dígitos.">
+      <button class="btn btn-secondary my-2 my-sm-0" type="submit">Buscar</button>
+    </form>
+
+    <div>
+      <form action = "/listado">
+      <button class="btn btn-secondary mt-4" type="submit">
+        Listado de Usuarios
+      </button> </form> <br>
+
+      <form action = "/productos">
+        <button class="btn btn-secondary" type="submit">
+          Listado de Productos
+        </button> </form> <br>
+
+      <form action = "/agregarProd" class="d-flex">
+        <button class="btn btn-secondary " type="submit">
+          Agregar Producto
+        </button> </form> <br>  
+
+        <form action = "/agregarAdmin">
+          <button class="btn btn-secondary" type="submit">
+            Agregar nuevo Usuario/Administrador
+          </button> </form> <br>
+    </div>
+
+
+
+  
+  {% endblock %}

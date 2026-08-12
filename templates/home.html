@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %} Hola Humano! {% endblock %}
+{% block body %}
+
+    <div id="carouselExampleCaptions" class="carousel slide pt-2" data-bs-ride="false">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <a href="/perros" method = "POST", "GET">
+          <img src="../static/public/uploads/foto01.jpg" class="d-block w-100" alt="...">
+          <div class="carousel-caption d-none d-md-block"></a>
+            <h5>Productos</h5>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <a href="https://www.facebook.com/hogarsilgassman/" method = "POST", "GET">
+          <img src="../static/public/uploads/foto02.jpg" class="d-block w-100" alt="...">
+          <div class="carousel-caption d-none d-md-block"></a>
+            <h5>Conocé nuestro Refugio</h5>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <a href="/consejos" method = "POST", "GET">
+          <img src="../static/public/uploads/foto03.jpg" class="d-block w-100" alt="...">
+          <div class="carousel-caption d-none d-md-block"></a>
+            <h5>Algunos consejos</h5>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+
+  
+  {% endblock %}

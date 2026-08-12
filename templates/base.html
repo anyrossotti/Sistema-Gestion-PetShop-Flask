@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %} {% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/01.css" />
+    <link rel="stylesheet" href="../static/font.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.1/font/bootstrap-icons.css">
+  </head>
+  <body>
+
+<div class="navbar-fijar">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Hola Humano!</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Productos</a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="/perros">Perros</a>
+                <a class="dropdown-item" href="/gatos">Gatos</a>
+                <a class="dropdown-item" href="/otros">Otras cosas...</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="https://www.facebook.com/hogarsilgassman/" target="_blank">Conocé nuestro refugio</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="/consejos">Algunos consejos</a>
+            </li>
+        </ul>
+        <li "nav-item">
+            <a class="btn btn-secondary my-2 my-sm-0" type="submit" href="/admin" method = "POST", "GET">Admin</a>
+            <a href="/salir" class="btn btn-secondary my-4 my-sm-0">Salir</a>
+            <a class="btn btn-secondary my-4 my-sm-0" href="/login">Login</a>
+            <a class="btn btn-secondary my-2 my-sm-0" href="/registro">Registro</a>
+            </li>    
+            </div>
+        </div>
+    </div>
+    </nav>
+</div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+    <div class="col-md-10 pt-2">
+        <div class="alert alert-dismissible alert-secondary">
+            <strong> {{ message }} </strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="container" id="container">
+
+{% block body %}
+
+<!-- ACA PONGO EL CONTENIDO DE CADA TEMPLATE -->
+
+{% endblock %}
+<div class="social-bar">
+    <a class="icon icon-facebook2" href="https://www.facebook.com/hogarsilgassman/" target="_blank"></a>
+    <a class="icon icon-instagram" href="https://www.instagram.com/holabichofeliz/" target="_blank"></a>
+    <a class="icon icon-whatsapp" href="https://wa.me/5491165065380?text=Hola%21+Gracias+por+escribirme%21+Dejame+tu+mensaje%21" target="_blank"></a>
+</div> 
+
+
+</div>    
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>

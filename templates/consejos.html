@@ -1,0 +1,17 @@
+{% extends 'base.html'%}
+{% block title %} Consejos {% endblock %}
+{% block body %}
+
+  <h2 class="mt-2"> Algunos consejos para cuidarlos mejor </h2>
+    <div class="caja2">
+      <img src="../static/public/uploads/pet-dog.png" class="d-block w-100"> 
+    </div> 
+    {% for c in consejo %}    
+    <div class="caja4">
+      <div class="caja3">
+        <strong><a href="/consejos/{{ c.0 }}" style="text-decoration: none;">{{ c.1 }}</a></strong>      
+      </div>
+    </div>
+      {% endfor %}   
+  
+  {% endblock %}

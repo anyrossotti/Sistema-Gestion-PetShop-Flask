@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %} Consejos {% endblock %}
+{% block body %}
+
+<div class="caja2">
+  <img src="../static/public/uploads/pet-dog.png" class="d-block w-100"> 
+</div> 
+<div class="caja4">
+  {% for c in consejo %}
+  <h4>{{ c.1 }}</h4>
+  <div class="caja3" id"">
+  <p><strong>
+    {{ c.2 }}</strong></p>
+  </div>
+</div>
+{% endfor %}   
+
+{% endblock %}

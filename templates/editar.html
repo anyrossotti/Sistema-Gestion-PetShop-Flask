@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %} Editar Usuario {% endblock %}
+{% block body %}
+
+  <center>
+    <div class="form-group mt-2">
+      <fieldset> 
+      <form action="/actualizar/{{ clientes.0 }}" method = "POST", "GET">
+      <h2><legend>Actualizar registro</legend><h2>
+        <h5>Registro a modificar: {{ clientes.0 }}<h5>
+      <div class="form-group">
+        <div class="form-group">
+          <input type = "number" name="dni" value="{{ clientes.1 }}" class="form-control mt-2" placeholder="Ingrese el DNI a modificar" required>
+        </div>
+        <div class="form-group">
+          <input type = "text" name="nombre" value="{{ clientes.2 }}" class="form-control mt-2" placeholder="Ingrese el Nombre a modificar" required>
+        </div>
+        <div class="form-group">
+          <input type = "text" name="apellido" value="{{ clientes.3 }}" class="form-control mt-2" placeholder="Ingrese el Apellido a modificar" required>
+        </div>
+        <div class="form-group">
+          <input type = "number" name="telefono" value="{{ clientes.4 }}" class="form-control mt-2" placeholder="Ingrese el Teléfono a modificar" required>
+        </div>
+        <div class="form-group">
+          <input type = "email" name="email" value="{{ clientes.5 }}" class="form-control mt-2" placeholder="Ingrese el E-mail a modificar" required>
+        </div>
+        <div class="form-group">
+          <input type="password" name="password" value="{{ clientes.6 }}" class="form-control mt-2" id="exampleInputPassword1" minlength="5" maxlength="30" placeholder="Password" required>
+        </div>
+      </div>
+    
+      
+      
+      <div class="form-group">
+          <select name= "tipo_usuario" class="form-control mt-2" >
+            <option value="{{ clientes.7 }}">Seleccione Tipo de Usuario</option>    
+            <option value = "0"> Usuario </option>
+            <option value = "1"> Administrador </option>    
+          </select>
+      </div>
+      <br>
+        <button type="submit" class="btn btn-primary mt-8">Submit</button>
+      </fieldset>
+    </form>
+    </div>
+  </center>
+    
+
+
+</center>
+{% endblock %}

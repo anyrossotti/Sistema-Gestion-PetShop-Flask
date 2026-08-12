@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %} Otros Productos {% endblock %}
+{% block body %}
+
+  <br>
+  <h1> Otros Productos </h1>
+<!-- Traer con un for el listado de la base de datos -->
+<!-- id, Nombre, precio, descripcion, imagen del Producto-->
+    <div class="principal">
+    {% for producto in productos %}
+      <div class="producto">
+        <img src="../static/public/uploads/{{ producto.4 }}" class="d-block w-100" alt="fotoProd"> <!-- Foto del Producto-->
+        <div class="detalle">
+          <p> {{ producto.1 }} </p>
+          <p> {{ producto.3 }} </p>
+          <p> ${{ producto.2 }} </p>
+          <div class="boton">
+            <button type="submit" class="btn btn-primary mt-8">Comprar</button>
+            <td><a class="btn btn-secondary my-2 my-sm-0" href="/editarProducto/{{producto.0}}"> Editar </a></td>
+            <td><a class="btn btn-secondary my-2 my-sm-0" onclick="return mostrar()" href="/otros/{{producto.0}}">Eliminar</a></button></td>
+      <script type="text/javascript" id='btn btn-secondary my-2 my-sm-0'>
+        function mostrar(){
+          var respuesta = confirm('¿Desea eliminar el producto ID: {{producto.0}}?')
+          return respuesta;
+          };
+      </script>
+            
+          </div>
+        </div>
+      </div>
+      {% endfor %}    
+    </div>
+    
+      
+
+  {% endblock %}
