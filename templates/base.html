@@ -26,6 +26,7 @@
                 <a class="dropdown-item" href="/perros">Perros</a>
                 <a class="dropdown-item" href="/gatos">Gatos</a>
                 <a class="dropdown-item" href="/otros">Otras cosas...</a>
+            </div>
             </li>
             <li class="nav-item">
             <a class="nav-link" href="https://www.facebook.com/hogarsilgassman/" target="_blank">Conocé nuestro refugio</a>
@@ -34,13 +35,19 @@
             <a class="nav-link" href="/consejos">Algunos consejos</a>
             </li>
         </ul>
-        <li "nav-item">
-            <a class="btn btn-secondary my-2 my-sm-0" type="submit" href="/admin" method = "POST", "GET">Admin</a>
-            <a href="/salir" class="btn btn-secondary my-4 my-sm-0">Salir</a>
-            <a class="btn btn-secondary my-4 my-sm-0" href="/login">Login</a>
-            <a class="btn btn-secondary my-2 my-sm-0" href="/registro">Registro</a>
-            </li>    
-            </div>
+        <li class="nav-item">
+            {% if session.get('logueado') or session.get('user_id') or session.get('nombre') %}
+                {# Si hay una sesión activa #}
+                {% if session.get('rol') == 'admin' or session.get('es_admin') or session.get('admin') %}
+                    <a class="btn btn-secondary my-2 my-sm-0" href="/admin">Admin</a>
+                {% endif %}
+                <a href="/salir" class="btn btn-secondary my-4 my-sm-0">Salir</a>
+            {% else %}
+                {# Si NO hay sesión activa #}
+                <a class="btn btn-secondary my-4 my-sm-0" href="/login">Login</a>
+                <a class="btn btn-secondary my-2 my-sm-0" href="/registro">Registro</a>
+            {% endif %}
+        </li>    
         </div>
     </div>
     </nav>
