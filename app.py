@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
-from flask_mysqldb import MySQL
 import pymysql
 pymysql.install_as_MySQLdb()
+
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask_mysqldb import MySQL
+
 import os
 from dotenv import load_dotenv
 
