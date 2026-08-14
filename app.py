@@ -57,7 +57,7 @@ def login():
             session['email'] = user[5]
             
             # ACA ESTA LA SOLUCION AL ERROR 500
-            session['tipo_usuario'] = int(user[6]) 
+            session['tipo_usuario'] = int(user[7]) 
             
             if session['tipo_usuario'] == 0:
                 message = "Acceso Correcto! Ahora podés disfrutar de nuestros productos"
