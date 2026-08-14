@@ -55,7 +55,10 @@ def login():
         if user != 0 and user is not None:
             session['logged_in'] = True
             session['email'] = user[5]
-            session['tipo_usuario'] = user[6] # tipo_usuario
+            
+            # ACA ESTA LA SOLUCION AL ERROR 500
+            session['tipo_usuario'] = int(user[6]) 
+            
             if session['tipo_usuario'] == 0:
                 message = "Acceso Correcto! Ahora podés disfrutar de nuestros productos"
                 flash(message)
@@ -64,6 +67,10 @@ def login():
                 message = "Acceso Correcto a las funciones de Administrador."
                 flash(message)
                 return render_template('admin.html')
+            else:
+                message = "Error: Tipo de cuenta desconocido."
+                flash(message)
+                return render_template('login.html')
         else:
             message = "Error de acceso. No existe el usuario"
             flash(message)
