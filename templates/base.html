@@ -36,9 +36,9 @@
             </li>
         </ul>
         <li class="nav-item">
-            {% if session.get('logueado') or session.get('user_id') or session.get('nombre') %}
+            {% if session.get('logged_in') %}
                 {# Si hay una sesión activa #}
-                {% if session.get('rol') == 'admin' or session.get('es_admin') or session.get('admin') %}
+                {% if session.get('tipo_usuario') == 1 %}
                     <a class="btn btn-secondary my-2 my-sm-0" href="/admin">Admin</a>
                 {% endif %}
                 <a href="/salir" class="btn btn-secondary my-4 my-sm-0">Salir</a>
