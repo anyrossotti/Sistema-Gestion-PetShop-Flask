@@ -1,26 +1,100 @@
-import pymysql
-pymysql.install_as_MySQLdb()
-
-from flask import Flask, render_template, request, redirect, url_for, session, flash
-from flask_mysqldb import MySQL
-
+import sqlite3
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
+from functools import wraps
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 
 app = Flask(__name__)
-app.secret_key = os.getenv('FLASK_SECRET_KEY', 'clave_por_defecto_si_no_hay_env')
-mysql = MySQL(app)
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'clave_super_secreta_petshop')
 
-app.config['MYSQL_HOST'] = os.getenv('DB_HOST')
-app.config['MYSQL_USER'] = os.getenv('DB_USER')
-app.config['MYSQL_PASSWORD'] = os.getenv('DB_PASSWORD')
-app.config['MYSQL_DB'] = os.getenv('DB_NAME')
-app.config['MYSQL_PORT'] = int(os.getenv('DB_PORT', 3306))
+DB_NAME = 'petshop.db'
 
-# --- RUTAS PÚBLICAS ---
-@app.route('/', methods=['POST', 'GET'])
+# --- FUNCIÓN DE CONEXIÓN A SQLITE ---
+def get_db_connection():
+    conn = sqlite3.connect(DB_NAME)
+    # Permite acceder a las columnas por nombre como si fueran diccionarios
+    conn.row_factory = sqlite3.Row
+    return conn
+
+# --- INICIALIZACIÓN AUTOMÁTICA DE TABLAS ---
+def init_db():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Tabla Clientes
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS clientes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            dni TEXT,
+            nombre TEXT,
+            apellido TEXT,
+            telefono TEXT,
+            email TEXT UNIQUE,
+            password TEXT,
+            tipo_usuario INTEGER DEFAULT 0
+        )
+    ''')
+
+    # Tabla Productos
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS productos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT,
+            precio REAL,
+            descripcion TEXT,
+            img TEXT,
+            categoria TEXT
+        )
+    ''')
+
+    # Tabla Consejos
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS consejos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            titulo TEXT,
+            texto TEXT
+        )
+    ''')
+
+    # Crear un administrador por defecto si no existe ninguno
+    cursor.execute("SELECT * FROM clientes WHERE email = 'admin@petshop.com'")
+    if not cursor.fetchone():
+        cursor.execute('''
+            INSERT INTO clientes (dni, nombre, apellido, telefono, email, password, tipo_usuario)
+            VALUES ('11111111', 'Admin', 'General', '12345678', 'admin@petshop.com', 'admin123', 1)
+        ''')
+
+    # Cargar datos iniciales de consejos si está vacía
+    cursor.execute("SELECT COUNT(*) FROM consejos")
+    if cursor.fetchone()[0] == 0:
+        consejos_iniciales = [
+            ("¿Cómo cuidar a tu mascota?", "Dejale agua disponible siempre."),
+            ("12 cosas que no debes hacer", "No utilices tus manos o pies para jugar."),
+            ("Tips para cuidar a tu perro", "Acaricia a tu perro: un trato amoroso."),
+            ("¿Cómo me acerco a un perro?", "Pedí permiso a sus dueños."),
+            ("Tu gato necesita ciertos cuidados", "Protección en las ventanas.")
+        ]
+        cursor.executemany("INSERT INTO consejos (titulo, texto) VALUES (?, ?)", consejos_iniciales)
+
+    conn.commit()
+    conn.close()
+
+# Ejecutamos la creación inicial al arrancar el script
+init_db()
+
+
+# --- DECORADOR PARA RUTAS ADMIN ---
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'email' not in session or session.get('tipo_usuario') != 1:
+            flash('Acceso denegado: Se requieren permisos de administrador.')
+            return redirect(url_for('home'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+# --- RUTAS PÚBLICAS Y AUTENTICACIÓN ---
+@app.route('/', methods=['GET'])
 def home():
     return render_template('home.html')
 
@@ -29,13 +103,15 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM clientes WHERE email = %s AND password = %s", (email, password))
-        user = cur.fetchone()
+        
+        conn = get_db_connection()
+        user = conn.execute("SELECT * FROM clientes WHERE email = ? AND password = ?", (email, password)).fetchone()
+        conn.close()
+        
         if user:
             session['logged_in'] = True
-            session['email'] = user[5]
-            session['tipo_usuario'] = int(user[7]) 
+            session['email'] = user['email']
+            session['tipo_usuario'] = int(user['tipo_usuario'])
             
             if session['tipo_usuario'] == 0:
                 flash("Acceso Correcto!")
@@ -46,6 +122,7 @@ def login():
         else:
             flash("Error de acceso. Credenciales incorrectas.")
             return render_template('login.html')
+            
     return render_template('login.html')
 
 @app.route('/registro', methods=["GET", "POST"])
@@ -53,10 +130,15 @@ def registro():
     if request.method == 'GET':
         return render_template("registro.html")
     else:
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO clientes(dni, nombre, apellido, telefono, email, password, tipo_usuario) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-        (request.form['dni'], request.form['nombre'], request.form['apellido'], request.form['telefono'], request.form['email'], request.form['password'], 0))
-        mysql.connection.commit()
+        conn = get_db_connection()
+        conn.execute('''
+            INSERT INTO clientes(dni, nombre, apellido, telefono, email, password, tipo_usuario) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (request.form['dni'], request.form['nombre'], request.form['apellido'], 
+              request.form['telefono'], request.form['email'], request.form['password'], 0))
+        conn.commit()
+        conn.close()
+        flash("Registro exitoso. Por favor inicia sesión.")
         return redirect(url_for('login'))
 
 @app.route('/salir', methods=["GET", "POST"])
@@ -64,96 +146,129 @@ def salir():
     session.clear()
     return render_template("home.html")
 
+
 # --- RUTAS PROTEGIDAS (ADMIN) ---
 @app.route('/admin', methods=['GET'])
+@admin_required
 def admin():
-    if 'email' in session and session.get('tipo_usuario') == 1:
-        return render_template('admin.html')
-    flash('Acceso denegado: Solo administradores.')
-    return render_template("home.html")
+    return render_template('admin.html')
 
 @app.route('/listado', methods=['GET'])
+@admin_required
 def listar():
-    if 'email' in session and session.get('tipo_usuario') == 1:
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM clientes")
-        return render_template('listado.html', clientes=cur.fetchall())
-    flash('Acceso denegado.')
-    return render_template("home.html")
+    conn = get_db_connection()
+    clientes = conn.execute("SELECT * FROM clientes").fetchall()
+    conn.close()
+    return render_template('listado.html', clientes=clientes)
 
 @app.route('/actualizar/<id>', methods=['POST','GET'])
+@admin_required
 def actualizar(id):
-    if 'email' in session and session.get('tipo_usuario') == 1:
-        if request.method == 'POST':
-            cur = mysql.connection.cursor()  
-            cur.execute("""UPDATE clientes SET dni = %s, nombre = %s, apellido = %s, telefono = %s, 
-            email = %s, password = %s, tipo_usuario = %s WHERE id = %s""", 
-            (request.form['dni'], request.form['nombre'], request.form['apellido'], request.form['telefono'], 
-             request.form['email'], request.form['password'], request.form['tipo_usuario'], id))
-            mysql.connection.commit()
-            flash('Registro actualizado.')
-            return redirect(url_for('listar'))
-    else:
-        flash('Acceso denegado.')
-    return render_template('home.html')
+    conn = get_db_connection()
+    if request.method == 'POST':
+        conn.execute('''
+            UPDATE clientes SET dni = ?, nombre = ?, apellido = ?, telefono = ?, 
+            email = ?, password = ?, tipo_usuario = ? WHERE id = ?
+        ''', (request.form['dni'], request.form['nombre'], request.form['apellido'], 
+              request.form['telefono'], request.form['email'], request.form['password'], 
+              request.form['tipo_usuario'], id))
+        conn.commit()
+        conn.close()
+        flash('Registro actualizado.')
+        return redirect(url_for('listar'))
+    
+    cliente = conn.execute("SELECT * FROM clientes WHERE id = ?", (id,)).fetchone()
+    conn.close()
+    return render_template('editar.html', clientes=cliente)
 
 @app.route('/eliminar/<string:id>')
+@admin_required
 def eliminar(id):
-    if 'email' in session and session.get('tipo_usuario') == 1:
-        cur = mysql.connection.cursor()
-        cur.execute("DELETE FROM clientes WHERE id = %s", (id,))
-        mysql.connection.commit()
-        flash('Contacto removido.')
-        return redirect(url_for('listar'))
-    flash('Acceso denegado.')
-    return render_template('home.html')
+    conn = get_db_connection()
+    conn.execute("DELETE FROM clientes WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+    flash('Contacto removido correctamente.')
+    return redirect(url_for('listar'))
 
 @app.route('/agregarProd', methods=['POST', 'GET'])
+@admin_required
 def agregarProd():
-    if 'email' in session and session.get('tipo_usuario') == 1:
-        if request.method == 'POST':
-            cur = mysql.connection.cursor()  
-            cur.execute("INSERT INTO productos (nombre, precio, descripcion, img, categoria) VALUES (%s, %s, %s, %s, %s)",
-            (request.form['nombre'], request.form['precio'], request.form['descripcion'], request.form['img'], request.form['categoria']))
-            mysql.connection.commit()
-            flash('Producto agregado correctamente!')
-        return render_template('agregar.html')
-    flash('Acceso denegado.')
-    return render_template("home.html")
+    if request.method == 'POST':
+        conn = get_db_connection()
+        conn.execute('''
+            INSERT INTO productos (nombre, precio, descripcion, img, categoria) 
+            VALUES (?, ?, ?, ?, ?)
+        ''', (request.form['nombre'], request.form['precio'], request.form['descripcion'], 
+              request.form['img'], request.form['categoria']))
+        conn.commit()
+        conn.close()
+        flash('Producto agregado correctamente!')
+    return render_template('agregar.html')
 
 @app.route('/productos/<string:id>') 
+@admin_required
 def eliminarProd(id):
-    if 'email' in session and session.get('tipo_usuario') == 1:
-        cur = mysql.connection.cursor()
-        cur.execute("DELETE FROM productos WHERE id = %s", (id,))
-        mysql.connection.commit() 
-        flash('Producto eliminado correctamente.')
-        return redirect(url_for('productos'))
-    flash('Acceso denegado.')
-    return render_template("home.html")
+    conn = get_db_connection()
+    conn.execute("DELETE FROM productos WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+    flash('Producto eliminado correctamente.')
+    return redirect(url_for('productos'))
 
-# --- RUTAS PRODUCTOS/CONSEJOS (REGISTRADOS) ---
+@app.route('/productos', methods=['GET'])
+@admin_required
+def productos():
+    conn = get_db_connection()
+    productos = conn.execute("SELECT * FROM productos").fetchall()
+    conn.close()
+    return render_template('productos.html', productos=productos)
+
+
+# --- RUTAS DE CONSULTA / CATÁLOGO ---
 @app.route('/gatos')
 def listarG():    
     if 'email' in session:
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM productos WHERE categoria = 'Gatos'")
-        return render_template('gatos.html', productos=cur.fetchall())
-    flash('Debe loguearse para ver productos.')
+        conn = get_db_connection()
+        productos = conn.execute("SELECT * FROM productos WHERE categoria = 'Gatos'").fetchall()
+        conn.close()
+        return render_template('gatos.html', productos=productos)
+    flash('Debe loguearse para ver los productos.')
     return redirect(url_for('login'))
 
 @app.route('/perros')
 def listarP():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM productos where categoria = 'Perros'")
-    return render_template('perros.html', productos=cur.fetchall())
+    conn = get_db_connection()
+    productos = conn.execute("SELECT * FROM productos WHERE categoria = 'Perros'").fetchall()
+    conn.close()
+    return render_template('perros.html', productos=productos)
+
+@app.route('/otros')
+def listarO():
+    if 'email' in session:
+        conn = get_db_connection()
+        productos = conn.execute("SELECT * FROM productos WHERE categoria = 'Otros'").fetchall()
+        conn.close()
+        return render_template('otros.html', productos=productos)
+    flash('Debe loguearse para ver los productos.')
+    return redirect(url_for('login'))
 
 @app.route('/consejos')
 def consejo():
     if 'email' in session:
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM consejos")
-        return render_template('consejos.html', consejo=cur.fetchall())
+        conn = get_db_connection()
+        consejos = conn.execute("SELECT * FROM consejos").fetchall()
+        conn.close()
+        return render_template('consejos.html', consejo=consejos)
+    return redirect(url_for('login'))
+
+@app.route('/consejos/<id>')
+def contenido(id):
+    if 'email' in session:
+        conn = get_db_connection()
+        consejo = conn.execute("SELECT * FROM consejos WHERE id = ?", (id,)).fetchall()
+        conn.close()
+        return render_template('consejos_contenido.html', consejo=consejo)
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
