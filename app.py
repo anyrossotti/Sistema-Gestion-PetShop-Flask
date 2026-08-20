@@ -62,6 +62,17 @@ def init_db():
             VALUES ('11111111', 'Admin', 'General', '12345678', 'admin@petshop.com', 'admin123', 1)
         ''')
 
+    # Cargar datos iniciales de productos si la tabla está vacía
+    cursor.execute("SELECT COUNT(*) FROM productos")
+    if cursor.fetchone()[0] == 0:
+        productos_iniciales = [
+            ("Alimento Seco Perros", 25000, "Bolsa de 15kg premium", "https://via.placeholder.com/150", "Perros"),
+            ("Juguete Hueso", 4500, "Resistente para mordeduras", "https://via.placeholder.com/150", "Perros"),
+            ("Alimento Gatos", 18000, "Bolsa de 10kg sabor pescado", "https://via.placeholder.com/150", "Gatos"),
+            ("Rascador", 12000, "Rascador multinivel", "https://via.placeholder.com/150", "Gatos")
+        ]
+        cursor.executemany("INSERT INTO productos (nombre, precio, descripcion, img, categoria) VALUES (?, ?, ?, ?, ?)", productos_iniciales)
+
     # Cargar datos iniciales de consejos si la tabla está vacía
     cursor.execute("SELECT COUNT(*) FROM consejos")
     if cursor.fetchone()[0] == 0:
