@@ -66,13 +66,22 @@ def init_db():
     cursor.execute("SELECT COUNT(*) FROM productos")
     if cursor.fetchone()[0] == 0:
         productos_iniciales = [
-            ("Alimento Seco Perros", 25000, "Bolsa de 15kg premium", "https://via.placeholder.com/150", "Perros"),
-            ("Juguete Hueso", 4500, "Resistente para mordeduras", "https://via.placeholder.com/150", "Perros"),
-            ("Alimento Gatos", 18000, "Bolsa de 10kg sabor pescado", "https://via.placeholder.com/150", "Gatos"),
-            ("Rascador", 12000, "Rascador multinivel", "https://via.placeholder.com/150", "Gatos")
+            # --- PERROS ---
+            ("Alimento Seco Perros", 25000, "Bolsa de 15kg premium", "/static/img/perro1.jpg", "Perros"),
+            ("Juguete Hueso", 4500, "Resistente para mordeduras", "/static/img/perro2.jpg", "Perros"),
+            ("Cama para Perro", 18500, "Cama acolchada tamaño grande", "/static/img/perro3.jpg", "Perros"),
+            ("Correa Extensible", 8200, "Correa de 5 metros reforzada", "/static/img/perro4.jpg", "Perros"),
+
+            # --- GATOS ---
+            ("Alimento Gatos", 18000, "Bolsa de 10kg sabor pescado", "/static/img/gato1.jpg", "Gatos"),
+            ("Rascador Multinivel", 12000, "Rascador con cueva y juguetes", "/static/img/gato2.jpg", "Gatos"),
+            ("Piedras Sanitarias", 6500, "Piedras sanitarias 4kg", "/static/img/gato3.jpg", "Gatos"),
+
+            # --- OTROS ---
+            ("Alimento Aves", 3200, "Semillas variadas 1kg", "/static/img/otro1.jpg", "Otros"),
+            ("Pecera Completa", 22000, "Pecera de vidrio con filtro", "/static/img/otro2.jpg", "Otros")
         ]
         cursor.executemany("INSERT INTO productos (nombre, precio, descripcion, img, categoria) VALUES (?, ?, ?, ?, ?)", productos_iniciales)
-
     # Cargar datos iniciales de consejos si la tabla está vacía
     cursor.execute("SELECT COUNT(*) FROM consejos")
     if cursor.fetchone()[0] == 0:
