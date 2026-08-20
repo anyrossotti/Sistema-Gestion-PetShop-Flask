@@ -69,19 +69,23 @@ def init_db():
             # --- PERROS ---
             ("Alimento Seco Perros", 25000, "Bolsa de 15kg premium", "/static/img/perro1.jpg", "Perros"),
             ("Juguete Hueso", 4500, "Resistente para mordeduras", "/static/img/perro2.jpg", "Perros"),
-            ("Cama para Perro", 18500, "Cama acolchada tamaño grande", "/static/img/perro3.jpg", "Perros"),
-            ("Correa Extensible", 8200, "Correa de 5 metros reforzada", "/static/img/perro4.jpg", "Perros"),
+            ("Cama Acolchada", 18500, "Cama grande lavable", "/static/img/perro3.jpg", "Perros"),
+            ("Correa Extensible", 8200, "Correa de 5 metros", "/static/img/perro4.jpg", "Perros"),
+            ("Shampoo Canino", 3500, "Shampoo neutro 500ml", "/static/img/perro5.jpg", "Perros"),
+            ("Plato Doble", 6000, "Comedero/bebedero de acero", "/static/img/perro6.jpg", "Perros"),
 
             # --- GATOS ---
             ("Alimento Gatos", 18000, "Bolsa de 10kg sabor pescado", "/static/img/gato1.jpg", "Gatos"),
-            ("Rascador Multinivel", 12000, "Rascador con cueva y juguetes", "/static/img/gato2.jpg", "Gatos"),
-            ("Piedras Sanitarias", 6500, "Piedras sanitarias 4kg", "/static/img/gato3.jpg", "Gatos"),
+            ("Rascador Multinivel", 12000, "Rascador con cueva", "/static/img/gato2.jpg", "Gatos"),
+            ("Piedras Sanitarias", 6500, "Piedras 4kg", "/static/img/gato3.jpg", "Gatos"),
+            ("Juguete Ratón", 2200, "Ratón con catnip", "/static/img/gato4.jpg", "Gatos"),
 
             # --- OTROS ---
             ("Alimento Aves", 3200, "Semillas variadas 1kg", "/static/img/otro1.jpg", "Otros"),
             ("Pecera Completa", 22000, "Pecera de vidrio con filtro", "/static/img/otro2.jpg", "Otros")
         ]
         cursor.executemany("INSERT INTO productos (nombre, precio, descripcion, img, categoria) VALUES (?, ?, ?, ?, ?)", productos_iniciales)
+        
     # Cargar datos iniciales de consejos si la tabla está vacía
     cursor.execute("SELECT COUNT(*) FROM consejos")
     if cursor.fetchone()[0] == 0:
