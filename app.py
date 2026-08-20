@@ -11,7 +11,6 @@ DB_NAME = 'petshop.db'
 # --- FUNCIÓN DE CONEXIÓN A SQLITE ---
 def get_db_connection():
     conn = sqlite3.connect(DB_NAME)
-    # Permite acceder a las columnas por nombre como si fueran diccionarios
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -55,7 +54,7 @@ def init_db():
         )
     ''')
 
-    # Crear un administrador por defecto si no existe ninguno
+    # Crear administrador por defecto si no existe
     cursor.execute("SELECT * FROM clientes WHERE email = 'admin@petshop.com'")
     if not cursor.fetchone():
         cursor.execute('''
@@ -63,7 +62,7 @@ def init_db():
             VALUES ('11111111', 'Admin', 'General', '12345678', 'admin@petshop.com', 'admin123', 1)
         ''')
 
-    # Cargar datos iniciales de consejos si está vacía
+    # Cargar datos iniciales de consejos si la tabla está vacía
     cursor.execute("SELECT COUNT(*) FROM consejos")
     if cursor.fetchone()[0] == 0:
         consejos_iniciales = [
@@ -78,7 +77,6 @@ def init_db():
     conn.commit()
     conn.close()
 
-# Ejecutamos la creación inicial al arrancar el script
 init_db()
 
 
@@ -225,16 +223,13 @@ def productos():
     return render_template('productos.html', productos=productos)
 
 
-# --- RUTAS DE CONSULTA / CATÁLOGO ---
+# --- RUTAS PÚBLICAS DE CATÁLOGO ---
 @app.route('/gatos')
 def listarG():    
-    if 'email' in session:
-        conn = get_db_connection()
-        productos = conn.execute("SELECT * FROM productos WHERE categoria = 'Gatos'").fetchall()
-        conn.close()
-        return render_template('gatos.html', productos=productos)
-    flash('Debe loguearse para ver los productos.')
-    return redirect(url_for('login'))
+    conn = get_db_connection()
+    productos = conn.execute("SELECT * FROM productos WHERE categoria = 'Gatos'").fetchall()
+    conn.close()
+    return render_template('gatos.html', productos=productos)
 
 @app.route('/perros')
 def listarP():
@@ -245,14 +240,13 @@ def listarP():
 
 @app.route('/otros')
 def listarO():
-    if 'email' in session:
-        conn = get_db_connection()
-        productos = conn.execute("SELECT * FROM productos WHERE categoria = 'Otros'").fetchall()
-        conn.close()
-        return render_template('otros.html', productos=productos)
-    flash('Debe loguearse para ver los productos.')
-    return redirect(url_for('login'))
+    conn = get_db_connection()
+    productos = conn.execute("SELECT * FROM productos WHERE categoria = 'Otros'").fetchall()
+    conn.close()
+    return render_template('otros.html', productos=productos)
 
+
+# --- SECCIÓN EXCLUSIVA (REQUIERE LOGIN) ---
 @app.route('/consejos')
 def consejo():
     if 'email' in session:
@@ -260,6 +254,8 @@ def consejo():
         consejos = conn.execute("SELECT * FROM consejos").fetchall()
         conn.close()
         return render_template('consejos.html', consejo=consejos)
+    
+    flash('Debes iniciar sesión o registrarte para acceder a la sección de consejos.')
     return redirect(url_for('login'))
 
 @app.route('/consejos/<id>')
@@ -269,6 +265,8 @@ def contenido(id):
         consejo = conn.execute("SELECT * FROM consejos WHERE id = ?", (id,)).fetchall()
         conn.close()
         return render_template('consejos_contenido.html', consejo=consejo)
+    
+    flash('Debes iniciar sesión o registrarte para acceder a esta sección.')
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
